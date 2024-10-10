@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h2>
+    Введите тему для генерации вопросов:
+</h2>
+
+<form method="post" action="{% url 'generate_quiz' %}">
+    {% csrf_token %}
+    <input type="text" name="topic" placeholder="Введите тему">
+    <button type="submit">Сгенерировать вопрос</button>
+</form>
+
+{% endblock %}
