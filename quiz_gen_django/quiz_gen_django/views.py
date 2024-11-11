@@ -9,10 +9,6 @@ def qenerate_quiz(request):
     if request.method == 'POST':
         topic = request.POST.get('topic')
         # -- Логика генерации вопросов --
-        question = question_gen(topic)
-        new_question = ''
-        for i in question:
-             new_question = new_question  + i + ' '
-        new_question += '?'
+        question_answer = question_gen(topic)
 
-        return render(request, 'quiz.html', {'topic': topic, 'question': new_question})
+        return render(request, 'quiz.html', {'topic': topic, 'question_answer': question_answer})

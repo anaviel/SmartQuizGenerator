@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Сгенерированный Вопрос{% endblock %}
 
 {% block content %}
-<h2>Выбранная тема: {{ topic }}</h2>
-<p>Сгенерированный вопрос:</p>
-<div class="generated-question">
-    <p>{{ question }}</p>
+<h2>Вопросы по теме:</h2>
+<h3>{{ topic }}</h3>
+
+<div class="generated-questions">
+    {% for item in question_answer %}
+        <div class="question-item">
+            <p>{{ item.0 }}</p> <!-- Вопрос -->
+            <button class="show-answer-button" onclick="toggleAnswer(this)">Показать ответ</button>
+            <p class="answer" style="display:none">{{ item.1 }}</p> <!-- Ответ скрыт по умолчанию -->
+        </div>
+    {% endfor %}
 </div>
 
 <a href="{% url 'home' %}" class="back-button">Назад к форме</a>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/quiz.js' %}"></script>  <!-- Подключаем внешний JS файл -->
 {% endblock %}

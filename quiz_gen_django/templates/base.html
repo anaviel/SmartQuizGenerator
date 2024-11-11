@@ -6,6 +6,7 @@
     <title>{% block title %}Генератор Умных Вопросов{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'js/quiz.js' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -22,6 +23,7 @@
     <footer>
         <p>&copy; 2024 Генератор Умных Вопросов</p>
     </footer>
-    
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>
