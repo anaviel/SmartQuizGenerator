@@ -1,18 +1,22 @@
 import spacy
 import wikipedia
 from transformers import T5ForConditionalGeneration, T5Tokenizer
+from sentence_transformers import SentenceTransformer, util
 
 # Загрузка модели русского языка для обработки текста (SpaCy)
 nlp = spacy.load("ru_core_news_sm")
+
+# Инициализация модели для эмбеддингов
+embedder = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 
 # Устанавливаем язык для Wikipedia (русский)
 wikipedia.set_lang("ru")
 
 # Загружаем модели и токенизаторы:
 # Модель для генерации вопросов
-question_model = T5ForConditionalGeneration.from_pretrained('/home/morph/proj/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/question_generation_model')
+question_model = T5ForConditionalGeneration.from_pretrained('C:/Users/Anastasiya/PycharmProjects/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/question_generation_model')
 # Модель для генерации ответов
-answer_model  = T5ForConditionalGeneration.from_pretrained('/home/morph/proj/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/final_model')
+answer_model  = T5ForConditionalGeneration.from_pretrained('C:/Users/Anastasiya/PycharmProjects/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/final_model')
 # Токенизатор для обеих моделей
 tokenizer = T5Tokenizer.from_pretrained("ai-forever/ruT5-base")
 
@@ -49,7 +53,7 @@ def get_wikipedia(keywords):
         else:
             return "Информация по запросу не найдена."
     except wikipedia.exceptions.DisambiguationError as e:
-        return f"Запрос слишком неоднозначен. Возможные страницы: {e.options}"  # В случае неоднозначности
+        return "Запрос слишком неоднозначен."  # В случае неоднозначности
 
 
 # Функция для генерации вопросов из текста
@@ -75,12 +79,16 @@ def generate_questions(text):
         get_wikipedia(keywords) if keywords else "Нет ключевых слов для поиска."
     )
 
+    if wiki_summary == "Информация по запросу не найдена.":
+        question_text = ''
+        return wiki_summary, question_text
+
+    if wiki_summary == "Запрос слишком неоднозначен.":
+        question_text = ''
+        return wiki_summary, question_text
+
     # Печатаем результат из Википедии для проверки
     print("Текст из Википедии:", wiki_summary)
-
-    # Если Wikipedia не дала информации, возвращаем пустой список вопросов
-    if wiki_summary == "Информация по запросу не найдена.":
-        return ["Не удалось найти подходящую информацию."]
 
     # Генерация вопросов с использованием обученной модели для вопросов
     input_ids = tokenizer(
@@ -94,18 +102,37 @@ def generate_questions(text):
     question_ids = question_model.generate(
         input_ids,
         max_length=64,
-        num_beams=5,
-        num_return_sequences=5,  # Генерация 5 различных вопросов
+        num_beams=12,
+        num_return_sequences=12,  # Генерация 12 различных вопросов
         temperature=1.2,  # Используем более высокую температуру для разнообразия
         top_p=0.9,  # Используем отбор по вероятности
         early_stopping=True,  # Останавливаем генерацию, когда модель "уверена" в результате
     )
 
+    # Декодируем вопросы в текст
     questions = [
         tokenizer.decode(q, skip_special_tokens=True) for q in question_ids
-    ]  # Декодируем вопросы в текст
+    ]
 
-    return questions
+    # Преобразуем вопросы в векторы
+    question_embeddings = embedder.encode(questions, convert_to_tensor=True)
+
+    unique_questions = []
+    for i, question in enumerate(questions):
+        # Сравниваем с ранее добавленными вопросами
+        is_unique = True
+        for unique_question in unique_questions:
+            # Вычисляем схожесть между вопросами
+            sim_score = util.pytorch_cos_sim(question_embeddings[i], unique_question[1])
+            if sim_score >= 0.7:  # Порог схожести
+                is_unique = False
+                break
+
+        if is_unique and len(unique_questions) < 5:
+            unique_questions.append((question, question_embeddings[i]))
+
+    # Оставляем только вопросы (без векторов)
+    return wiki_summary, [q[0] for q in unique_questions]
 
 
 # Функция для генерации ответов по контексту и вопросам
@@ -155,13 +182,15 @@ def question_gen(text):
     Список пар (вопрос, ответ) в виде двумерного массива.
     """
     # Генерируем вопросы по контексту
-    questions = generate_questions(text)
+    wiki_summary, questions = generate_questions(text)
+
+    if questions == '':
+        return wiki_summary
 
     # Генерируем ответы на вопросы
-    answers = generate_answers(text, questions)
+    answers = generate_answers(wiki_summary, questions)
 
     # Возвращаем вопросы и ответы как список пар (вопрос, ответ)
     question_answer = list(zip(questions, answers))
 
     return question_answer
-    # return question_answer[:5]

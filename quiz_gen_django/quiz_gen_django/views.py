@@ -11,4 +11,8 @@ def qenerate_quiz(request):
         # -- Логика генерации вопросов --
         question_answer = question_gen(topic)
 
-        return render(request, 'quiz.html', {'topic': topic, 'question_answer': question_answer})
+        if isinstance(question_answer, str):
+            return render(request, 'error.html', {'topic': topic, 'question_answer': question_answer})
+
+        elif isinstance(question_answer, list):
+            return render(request, 'quiz.html', {'topic': topic, 'question_answer': question_answer})

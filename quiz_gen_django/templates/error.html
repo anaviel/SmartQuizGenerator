@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Сгенерированные вопросы{% endblock %}
+
+{% block content %}
+<h2>Вопросы по теме:</h2>
+<h3>{{ topic }}</h3>
+
+<div class="generated-questions">
+    <p>{{ question_answer }}</p>
+</div>
+
+<a href="{% url 'home' %}" class="back-button">Назад к форме</a>
+{% endblock %}
