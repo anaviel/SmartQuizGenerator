@@ -1,5 +1,6 @@
 import spacy
 import wikipedia
+import os
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from sentence_transformers import SentenceTransformer, util
 
@@ -13,10 +14,18 @@ embedder = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 wikipedia.set_lang("ru")
 
 # Загружаем модели и токенизаторы:
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+relative_path_1 = os.path.join(script_dir, "question_generation_model")
+relative_path_2 = os.path.join(script_dir, "final_model")
+
+
 # Модель для генерации вопросов
-question_model = T5ForConditionalGeneration.from_pretrained('C:/Users/Anastasiya/PycharmProjects/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/question_generation_model')
+question_model = T5ForConditionalGeneration.from_pretrained(relative_path_1)
+
 # Модель для генерации ответов
-answer_model  = T5ForConditionalGeneration.from_pretrained('C:/Users/Anastasiya/PycharmProjects/SmartQuizGenerator/quiz_gen_django/quiz_gen_django/final_model')
+answer_model  = T5ForConditionalGeneration.from_pretrained(relative_path_2)
+
 # Токенизатор для обеих моделей
 tokenizer = T5Tokenizer.from_pretrained("ai-forever/ruT5-base")
 
