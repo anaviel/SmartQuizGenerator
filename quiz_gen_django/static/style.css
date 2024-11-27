@@ -136,50 +136,61 @@ footer {
 
 /* Стиль для текста вопроса */
 .question-item p {
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     margin-bottom: 10px;
 }
 
-/* Стиль для кнопки показа ответа */
-.show-answer-button {
-    display: block;
-    width: 100%;
-    padding: 10px 20px;
-    background-color: #4a4a8a;
-    color: white;
-    border: none;
+/* Стилизация для радиокнопок и лейблов */
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Для отступов между ответами */
+}
+
+.answers input[type="radio"] {
+    display: none; /* Скрываем радиокнопки */
+}
+
+.answers label {
+    font-size: 16px;
+    color: #555;
+    padding: 10px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.show-answer-button:hover {
-    background-color: #6a6ab2;
-}
-
-.show-answer-button.active {
-    background-color: #6a6ab2;
-}
-
-/* Стиль для ответа */
-.answer {
-    font-size: 15px;
-    color: #555;
-    background-color: #eef;
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 10px;
-    display: none; /* Ответ скрыт по умолчанию */
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* Появление ответа */
-.question-item.show-answer .answer {
+    transition: background-color 0.3s, color 0.3s;
     display: block;
-    opacity: 1;
+    position: relative;
+    margin-left: 30px; /* Отступ для радиокнопок */
+}
+
+/* Стиль для выбранного ответа */
+.answers input[type="radio"]:checked + label {
+    background-color: #c3c3fa;  /* Цвет фона для выбранного ответа */
+    color: #000000;  /* Цвет текста для выбранного */
+    font-weight: 400;
+}
+
+/* Стиль для подсветки правильных и неправильных ответов */
+.question-item.correct {
+    background-color: #c8e6c9;  /* Зеленый для правильного ответа */
+}
+
+.question-item.incorrect {
+    background-color: #ffcdd2;  /* Красный для неправильного ответа */
+}
+
+/* Стиль для блокировки выбора после проверки */
+input[type="radio"]:disabled + label {
+    color: #aaa;  /* Тусклый цвет для заблокированных вариантов */
+    cursor: not-allowed;
+    background-color: #f5f5f5;  /* Светлый фон для заблокированных */
+}
+
+#result {
+    font-size: 18px;
+    margin-top: 20px;
+    font-weight: 600;
 }
 
 

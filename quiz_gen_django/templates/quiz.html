@@ -5,22 +5,36 @@
 {% block title %}Сгенерированные вопросы{% endblock %}
 
 {% block content %}
-<h2>Вопросы по теме:</h2>
-<h3>{{ topic }}</h3>
+    <h2>Вопросы по теме:</h2>
+    <h3>{{ topic }}</h3>
 
-<div class="generated-questions">
-    {% for item in question_answer %}
-        <div class="question-item">
-            <p>{{ item.0 }}</p> <!-- Вопрос -->
-            <button class="show-answer-button" onclick="toggleAnswer(this)">Показать ответ</button>
-            <p class="answer" style="display:none">{{ item.1 }}</p> <!-- Ответ скрыт по умолчанию -->
+    <form id="quiz-form">
+        <div class="generated-questions">
+            {% for item in question_answers %}
+                <div class="question-item" data-correct-answer="{{ item.correct_answer }}">
+                    <p>{{ item.question }}</p>
+                    <div class="answers">
+                        {% for answer in item.answers %}
+                            <input type="radio" id="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}" name="question{{ forloop.parentloop.counter }}" value="{{ answer }}">
+                            <label for="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}">{{ answer }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
+        <button type="button" class="submit-button" onclick="checkAnswers()">Проверить</button>
+    </form>
+    
 
-<a href="{% url 'home' %}" class="back-button">Назад к форме</a>
+    <p id="result" style="font-size: 18px; margin-top: 20px;"></p>
+
+    <a href="{% url 'home' %}" class="back-button">Назад к форме</a>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/quiz.js' %}"></script>  <!-- Подключаем внешний JS файл -->
+    <script src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}
+
+
+
+

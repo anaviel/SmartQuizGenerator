@@ -1,6 +1,7 @@
 import spacy
 import wikipedia
 import os
+import random
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from sentence_transformers import SentenceTransformer, util
 
@@ -89,11 +90,11 @@ def generate_questions(text):
     )
 
     if wiki_summary == "Информация по запросу не найдена.":
-        question_text = ''
+        question_text = None
         return wiki_summary, question_text
 
     if wiki_summary == "Запрос слишком неоднозначен.":
-        question_text = ''
+        question_text = None
         return wiki_summary, question_text
 
     # Печатаем результат из Википедии для проверки
@@ -145,7 +146,7 @@ def generate_questions(text):
 
 
 # Функция для генерации ответов по контексту и вопросам
-def generate_answers(context, questions):
+def generate_correct_answers(context, question):
     """
     Генерирует ответы на переданные вопросы с использованием контекста.
 
@@ -156,26 +157,42 @@ def generate_answers(context, questions):
     Возвращает:
     Список ответов на каждый вопрос.
     """
+    input_text = (
+        question + " " + context
+    )  # Формируем запрос для модели: вопрос + контекст
+    input_ids = tokenizer(
+        input_text,
+        return_tensors="pt",
+        max_length=512,
+        truncation=True,
+        padding="max_length",
+    ).input_ids
+    answer_ids = answer_model.generate(
+        input_ids, max_length=128, num_beams=5, early_stopping=True
+    )
+    correct_answer = tokenizer.decode(
+        answer_ids[0], skip_special_tokens=True
+    )  # Декодируем ответ в текст
+
+    return correct_answer
+
+# Функция для генерации неправильных ответов
+def generate_incorrect_answers(some_args):
+    incorrect_answers = ['неверный_ответ1', 'неверный_ответ2','неверный_ответ3']
+    return incorrect_answers
+
+def generate_all_answers(context, questions):
     answers = []
     for question in questions:
-        input_text = (
-            question + " " + context
-        )  # Формируем запрос для модели: вопрос + контекст
-        input_ids = tokenizer(
-            input_text,
-            return_tensors="pt",
-            max_length=512,
-            truncation=True,
-            padding="max_length",
-        ).input_ids
-        answer_ids = answer_model.generate(
-            input_ids, max_length=128, num_beams=5, early_stopping=True
-        )
-        answer = tokenizer.decode(
-            answer_ids[0], skip_special_tokens=True
-        )  # Декодируем ответ в текст
-        answers.append(answer)  # Добавляем ответ в список
-
+        correct_answer = generate_correct_answers(context, question)
+        incorrect_answers = generate_incorrect_answers('аргументы')
+        all_answers = [correct_answer] + incorrect_answers
+        random.shuffle(all_answers)
+        answers.append({
+            'question': question,
+            'answers': all_answers,
+            'correct_answer': correct_answer
+        })
     return answers
 
 
@@ -190,16 +207,13 @@ def question_gen(text):
     Возвращает:
     Список пар (вопрос, ответ) в виде двумерного массива.
     """
-    # Генерируем вопросы по контексту
+    # Генерация вопросов
     wiki_summary, questions = generate_questions(text)
 
-    if questions == '':
+    if questions is None:
         return wiki_summary
 
-    # Генерируем ответы на вопросы
-    answers = generate_answers(wiki_summary, questions)
+    # Генерация ответов
+    question_answers = generate_all_answers(wiki_summary, questions)
 
-    # Возвращаем вопросы и ответы как список пар (вопрос, ответ)
-    question_answer = list(zip(questions, answers))
-
-    return question_answer
+    return question_answers
