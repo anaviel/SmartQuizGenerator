@@ -8,11 +8,12 @@ def home(request):
 def qenerate_quiz(request):
     if request.method == 'POST':
         topic = request.POST.get('topic')
-        # -- Логика генерации вопросов --
-        question_answer = question_gen(topic)
+        question_answers = question_gen(topic)
+        print(question_answers)
+        if isinstance(question_answers, str):
+            return render(request, 'error.html', {'topic': topic, 'question_answers': question_answers})
+        elif isinstance(question_answers, list):
+            for item in question_answers:
+                item['answers'] = item['answers']
+            return render(request, 'quiz.html', {'topic': topic, 'question_answers': question_answers})
 
-        if isinstance(question_answer, str):
-            return render(request, 'error.html', {'topic': topic, 'question_answer': question_answer})
-
-        elif isinstance(question_answer, list):
-            return render(request, 'quiz.html', {'topic': topic, 'question_answer': question_answer})
