@@ -303,3 +303,7 @@ pyrightconfig.json
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
 .pdm-python
+
+# Ignore models folders
+quiz_gen_django/quiz_gen_django/question_generation_model/
+quiz_gen_django/quiz_gen_django/final_model/
