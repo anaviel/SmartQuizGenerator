@@ -307,3 +307,7 @@ pyrightconfig.json
 # Ignore models folders
 quiz_gen_django/quiz_gen_django/question_generation_model/
 quiz_gen_django/quiz_gen_django/final_model/
+
+# Ignore database files
+quiz_gen_django/*.sqlite3
+quiz_gen_django/*.sqlite
