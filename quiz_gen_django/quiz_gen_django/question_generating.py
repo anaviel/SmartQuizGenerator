@@ -4,6 +4,8 @@ import os
 import random
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from sentence_transformers import SentenceTransformer, util
+from llama_cpp import Llama
+import re
 
 # Загрузка модели русского языка для обработки текста (SpaCy)
 nlp = spacy.load("ru_core_news_sm")
@@ -30,6 +32,38 @@ answer_model  = T5ForConditionalGeneration.from_pretrained(relative_path_2)
 # Токенизатор для обеих моделей
 tokenizer = T5Tokenizer.from_pretrained("ai-forever/ruT5-base")
 
+# Задаём параметры для модели неправильных ответов
+SYSTEM_PROMPT = "Ты — Сайга, русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
+SYSTEM_TOKEN = 1587
+USER_TOKEN = 2188
+BOT_TOKEN = 12435
+LINE_BREAK_TOKEN = 13
+
+# Путь к загруженной модели
+PATH_TO_GGUF = os.path.join(script_dir, "saiga_mistral_7b_gguf", "model-q4_K.gguf")
+
+# Словарь токенов для ролей
+ROLE_TOKENS = {
+    "user": USER_TOKEN,
+    "bot": BOT_TOKEN,
+    "system": SYSTEM_TOKEN
+}
+
+def get_message_tokens(model: Llama, role: str, content: str) -> list[int]:
+    """Преобразует текст сообщения в токены с добавлением специальных токенов."""
+    message_tokens = model.tokenize(content.encode("utf-8"))
+    message_tokens.insert(1, ROLE_TOKENS[role])
+    message_tokens.insert(2, LINE_BREAK_TOKEN)
+    message_tokens.append(model.token_eos())
+    return message_tokens
+
+def get_system_tokens(model: Llama):
+    """Создаёт токены для системного сообщения."""
+    system_message = {
+        "role": "system",
+        "content": SYSTEM_PROMPT
+    }
+    return get_message_tokens(model, **system_message)
 
 # Функция для получения краткой информации по ключевым словам из Wikipedia
 def get_wikipedia(keywords):
@@ -138,7 +172,7 @@ def generate_questions(text):
                 is_unique = False
                 break
 
-        if is_unique and len(unique_questions) < 5:
+        if is_unique and len(unique_questions) < 3:
             unique_questions.append((question, question_embeddings[i]))
 
     # Оставляем только вопросы (без векторов)
@@ -174,18 +208,66 @@ def generate_correct_answers(context, question):
         answer_ids[0], skip_special_tokens=True
     )  # Декодируем ответ в текст
 
+    # Преобразуем ответ так, чтобы начинался с большой буквы
+    correct_answer = correct_answer.capitalize()
+    
     return correct_answer
 
-# Функция для генерации неправильных ответов
-def generate_incorrect_answers(some_args):
-    incorrect_answers = ['неверный_ответ1', 'неверный_ответ2','неверный_ответ3']
+# Функция для генерации неправильных ответов с помощью модели saiga_mistral_7b_gguf
+def generate_incorrect_answers(context, question):
+    print(f"generate_incorrect_answers: context={context}, question={question}")
+    # Инициализация модели
+    model = Llama(
+        model_path=PATH_TO_GGUF,
+        n_ctx=2000,  # Максимальный контекст
+        n_parts=1    # Число частей модели (1 для GGUF)
+    )
+
+    # Создание системных токенов
+    system_tokens = get_system_tokens(model)
+
+    # Формируем промт
+    prompt = f"Задание: придумай 3 осмысленных, но НЕПРАВИЛЬНЫХ вариантов ответа к вопросу, опираясь на контекст: - Контекст: {context}. - Вопрос: {question}"
+
+
+    # Преобразуем промт в токены
+    user_tokens = get_message_tokens(model, "user", prompt)
+    role_tokens = [model.token_bos(), BOT_TOKEN, LINE_BREAK_TOKEN]
+    tokens = system_tokens + user_tokens + role_tokens
+
+    # Генерация ответа
+    generator = model.generate(
+        tokens,
+        top_k=30,
+        top_p=0.9,
+        temp=0.5,
+        repeat_penalty=1.1
+    )
+
+    # Сбор ответа
+    response = ""
+    for token in generator:
+        token_str = model.detokenize([token]).decode("utf-8", errors="ignore")
+        if token == model.token_eos():
+            break
+        response += token_str
+
+    # Разбиваем ответ на список неправильных вариантов
+    incorrect_answers = [ans.strip() for ans in response.split("\n") if ans.strip()]
+
+    # Убираем нумерацию (например, "1. ", "2. ", "3. ") с помощью регулярного выражения
+    incorrect_answers = re.sub(r"^\d+\.\s*", "", response, flags=re.MULTILINE).strip().split("\n")[:3]
+
+    # Убираем лишние пустые строки, если они есть
+    incorrect_answers = [answer.strip() for answer in incorrect_answers if answer.strip()]
+    print(f"Неправильные ответы: {incorrect_answers}")
     return incorrect_answers
 
 def generate_all_answers(context, questions):
     answers = []
     for question in questions:
         correct_answer = generate_correct_answers(context, question)
-        incorrect_answers = generate_incorrect_answers('аргументы')
+        incorrect_answers = generate_incorrect_answers(context, question)
         all_answers = [correct_answer] + incorrect_answers
         random.shuffle(all_answers)
         answers.append({
@@ -215,5 +297,5 @@ def question_gen(text):
 
     # Генерация ответов
     question_answers = generate_all_answers(wiki_summary, questions)
-
+    print(f"Сгенерированные вопросы и ответы: {question_answers}")
     return question_answers
