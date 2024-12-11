@@ -312,3 +312,6 @@ quiz_gen_django/quiz_gen_django/saiga_mistral_7b_gguf/
 # Ignore database files
 quiz_gen_django/*.sqlite3
 quiz_gen_django/*.sqlite
+
+# Ignore .env
+.env
