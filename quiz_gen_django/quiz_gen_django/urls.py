@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from quiz_gen_django import views
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('generate/', views.qenerate_quiz, name='generate_quiz'),
+    path('generate/', views.generate_quiz, name='generate_quiz'),
 ]

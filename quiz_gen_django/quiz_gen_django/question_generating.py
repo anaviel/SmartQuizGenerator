@@ -214,7 +214,7 @@ def generate_correct_answers(context, question):
     return correct_answer
 
 # Функция для генерации неправильных ответов с помощью модели saiga_mistral_7b_gguf
-def generate_incorrect_answers(context, question):
+def generate_incorrect_answers(context, question, correct_answer):
     print(f"generate_incorrect_answers: context={context}, question={question}")
     # Инициализация модели
     model = Llama(
@@ -227,7 +227,7 @@ def generate_incorrect_answers(context, question):
     system_tokens = get_system_tokens(model)
 
     # Формируем промт
-    prompt = f"Задание: придумай 3 осмысленных, но НЕПРАВИЛЬНЫХ вариантов ответа к вопросу, опираясь на контекст: - Контекст: {context}. - Вопрос: {question}"
+    prompt = f"Задание: придумай 3 осмысленных, но НЕПРАВИЛЬНЫХ вариантов ответа к вопросу: {question}, опираясь на правильный ответ: {correct_answer}."
 
 
     # Преобразуем промт в токены
@@ -267,7 +267,7 @@ def generate_all_answers(context, questions):
     answers = []
     for question in questions:
         correct_answer = generate_correct_answers(context, question)
-        incorrect_answers = generate_incorrect_answers(context, question)
+        incorrect_answers = generate_incorrect_answers(context, question, correct_answer)
         all_answers = [correct_answer] + incorrect_answers
         random.shuffle(all_answers)
         answers.append({

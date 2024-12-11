@@ -6,7 +6,6 @@
     <title>{% block title %}Генератор Умных Вопросов{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="{% static 'js/quiz.js' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -15,9 +14,15 @@
     <header>
         <h1>Генератор умных вопросов</h1>
     </header>
-    
+
     <div class="content">
         {% block content %}{% endblock %}
+    </div>
+
+     <!-- Экран загрузки -->
+    <div id="loading-screen" style="display: none;">
+         <div class="spinner"></div>
+         <p class="loading-text">Генерация вопросов может занять некоторое время. Пожалуйста, подождите...</p>
     </div>
 
     <footer>
@@ -27,3 +32,5 @@
     {% block scripts %}{% endblock %}
 </body>
 </html>
+
+

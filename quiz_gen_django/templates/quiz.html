@@ -15,16 +15,18 @@
                     <p>{{ item.question }}</p>
                     <div class="answers">
                         {% for answer in item.answers %}
-                            <input type="radio" id="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}" name="question{{ forloop.parentloop.counter }}" value="{{ answer }}">
-                            <label for="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}">{{ answer }}</label>
+                            <div class="answer-item">
+                                <input type="radio" id="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}" name="question{{ forloop.parentloop.counter }}" value="{{ answer }}">
+                                <label for="answer{{ forloop.parentloop.counter }}_{{ forloop.counter }}">{{ answer }}</label>
+                            </div>
                         {% endfor %}
                     </div>
+                    <p class="correct-answer" style="display: none;">Правильный ответ: {{ item.correct_answer }}</p>
                 </div>
             {% endfor %}
         </div>
         <button type="button" class="submit-button" onclick="checkAnswers()">Проверить</button>
     </form>
-    
 
     <p id="result" style="font-size: 18px; margin-top: 20px;"></p>
 
@@ -34,7 +36,3 @@
 {% block scripts %}
     <script src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}
-
-
-
-
