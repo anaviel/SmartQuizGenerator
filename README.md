@@ -56,7 +56,7 @@ SmartQuizGenerator — это веб-приложение, которое на �
 
 3. Список вопросов с вариантами ответов, полученный результат
 
-   <img src="https://github.com/anaviel/SmartQuizGenerator/blob/master/screen/3.jpg" alt="Третий скриншот" style="width: 80%;">
+   ![Третий скриншот](https://github.com/anaviel/SmartQuizGenerator/blob/master/screen/3.jpg)
 
 4. Возвращение к окну ввода темы
 
