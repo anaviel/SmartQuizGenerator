@@ -123,11 +123,8 @@ def generate_questions(text):
         get_wikipedia(keywords) if keywords else "Нет ключевых слов для поиска."
     )
 
-    if wiki_summary == "Информация по запросу не найдена.":
-        question_text = None
-        return wiki_summary, question_text
-
-    if wiki_summary == "Запрос слишком неоднозначен.":
+    if ((wiki_summary == "Нет ключевых слов для поиска.") or (wiki_summary == "Информация по запросу не найдена.")
+            or (wiki_summary == "Запрос слишком неоднозначен.")):
         question_text = None
         return wiki_summary, question_text
 
@@ -215,7 +212,7 @@ def generate_correct_answers(context, question):
 
 # Функция для генерации неправильных ответов с помощью модели saiga_mistral_7b_gguf
 def generate_incorrect_answers(context, question, correct_answer):
-    print(f"generate_incorrect_answers: context={context}, question={question}")
+    print(f"generate_incorrect_answers: context={context}, correct_answer={correct_answer}")
     # Инициализация модели
     model = Llama(
         model_path=PATH_TO_GGUF,
