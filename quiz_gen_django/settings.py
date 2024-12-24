@@ -28,6 +28,8 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 INFERENCE_SERVER_MODE = os.getenv("INFERENCE_SERVER_MODE")
 
+print(f"[INFO] INFERENCE_SERVER_MODE: {INFERENCE_SERVER_MODE}")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -90,7 +92,8 @@ print(f"[info] RUNNING_ON_VERCEL: {RUNNING_ON_VERCEL}")
 DATABASES = {
     "default": {
         # [ATTENTION]: see vercel SQLite issue:
-        #   https://github.com/vercel/vercel/issues/2860#issuecomment-522087251
+        #   - https://github.com/vercel/vercel/issues/2860#issuecomment-522087251
+        #   - https://vercel.com/guides/is-sqlite-supported-in-vercel
         "ENGINE": "" if RUNNING_ON_VERCEL else "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
