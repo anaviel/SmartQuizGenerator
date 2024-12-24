@@ -1,16 +1,16 @@
 {
-    "builds": [{
-        "src": "quiz_gen_django/quiz_gen_django/wsgi.py",
-        "use": "@vercel/python",
-        "config": {
-            "maxLambdaSize": "15mb",
-            "runtime": "python3.10"
-        }
-    }],
     "routes": [
         {
             "src": "quiz_gen_django/(.*)",
             "dest": "quiz_gen_django/quiz_gen_django/wsgi.py"
         }
-    ]
+    ],
+    "builds": [{
+        "src": "quiz_gen_django/quiz_gen_django/*.py",
+        "use": "@vercel/python",
+        "config": {
+            "maxLambdaSize": "15mb",
+            "runtime": "python3.10"
+        }
+    }, { "src": "quiz_gen_django/static", "use": "@vercel/static" }]
 }
