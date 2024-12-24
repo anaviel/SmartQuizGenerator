@@ -23,7 +23,7 @@
             "dest": "/static/$1"
         },
         {
-            "src": "quiz_gen_django/(.*)",
+            "src": "/(.*)",
             "dest": "quiz_gen_django/quiz_gen_django/wsgi.py"
         }
     ]
