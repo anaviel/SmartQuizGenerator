@@ -1,5 +1,26 @@
 {
+    "version": 2,
+    "builds": [
+        {
+            "src": "quiz_gen_django/quiz_gen_django/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "15mb"
+            }
+        },
+        {
+            "src": "quiz_gen_django/build_files.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "quiz_gen_django/staticfiles_build"
+            }
+        }
+    ],
     "routes": [
+        {
+            "src": "quiz_gen_django/static/(.*)",
+            "dest": "quiz_gen_django/static/$1"
+        },
         {
             "src": "quiz_gen_django/(.*)",
             "dest": "quiz_gen_django/quiz_gen_django/wsgi.py"
