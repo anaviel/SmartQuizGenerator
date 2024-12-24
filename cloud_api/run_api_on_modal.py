@@ -607,19 +607,19 @@ async def generate_answers_incorrect(
     correct_answer: str = Query(...)
 ):
     # генерация
-    all_answers = ModelQandA().gen_incorrect_answers_.remote(
+    incorrect_answers = ModelQandA().gen_incorrect_answers_.remote(
         context,
         question,
         correct_answer
     )
 
-    if all_answers:
+    if incorrect_answers:
         # успешно сгенерировано
         return {
             "context": context,
             "question": question,
             "correct_answer": correct_answer,
-            "all_answers": all_answers
+            "incorrect_answers": incorrect_answers
         }
 
     # обработка неожиданных ситуаций
