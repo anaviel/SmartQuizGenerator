@@ -4,6 +4,7 @@
         {
             "src": "quiz_gen_django/quiz_gen_django/wsgi.py",
             "use": "@vercel/python",
+            "cwd": "quiz_gen_django",
             "config": {
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.10"
