@@ -10,9 +10,10 @@
         },
         {
             "src": "quiz_gen_django/build_files.sh",
-            "use": "@vercel/static-build",
+            "use": ["@vercel/static-build", "@vercel/python"],
             "config": {
-                "distDir": "quiz_gen_django/staticfiles_build"
+                "distDir": "quiz_gen_django/staticfiles_build",
+                "runtime": "python3.10"
             }
         }
     ],
