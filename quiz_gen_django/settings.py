@@ -86,6 +86,7 @@ WSGI_APPLICATION = "quiz_gen_django.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 RUNNING_ON_VERCEL = os.getenv("RUNNING_ON_VERCEL", 'False').lower() in ('true', '1', 't')
+print(f"[info] RUNNING_ON_VERCEL: {RUNNING_ON_VERCEL}")
 DATABASES = {
     "default": {
         # [ATTENTION]: see vercel SQLite issue:
