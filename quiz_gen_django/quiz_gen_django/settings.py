@@ -87,6 +87,10 @@ WSGI_APPLICATION = "quiz_gen_django.wsgi.application"
 
 DATABASES = {
     "default": {
+        # [ATTENTION]: for local development UNCOMMENT - see vercel SQLite issue:
+        #   https://github.com/vercel/vercel/issues/2860#issuecomment-522087251
+        
+        # "ENGINE": "django.db.backends.sqlite3",
         "ENGINE": "",
         "NAME": BASE_DIR / "db.sqlite3",
     }
@@ -128,7 +132,8 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build", "static")
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
