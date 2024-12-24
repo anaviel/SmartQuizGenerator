@@ -8,13 +8,13 @@
 *.pyc
 __pycache__/
 local_settings.py
-# db.sqlite3
-# db.sqlite3-journal
+db.sqlite3
+db.sqlite3-journal
 media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
-quiz_gen_django/staticfiles/
+staticfiles/
 
 ### Django.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -310,10 +310,11 @@ quiz_gen_django/final_model/
 quiz_gen_django/saiga_mistral_7b_gguf/
 
 # Ignore database files
-# *.sqlite3
-# *.sqlite
+*.sqlite3
+*.sqlite
 
 # Ignore .env
 .env
 
-.vercel
+# Ignore vercel private folder
+.vercel/

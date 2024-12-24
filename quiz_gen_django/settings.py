@@ -85,13 +85,12 @@ WSGI_APPLICATION = "quiz_gen_django.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+RUNNING_ON_VERCEL = os.getenv("RUNNING_ON_VERCEL", 'False').lower() in ('true', '1', 't')
 DATABASES = {
     "default": {
-        # [ATTENTION]: for local development UNCOMMENT - see vercel SQLite issue:
+        # [ATTENTION]: see vercel SQLite issue:
         #   https://github.com/vercel/vercel/issues/2860#issuecomment-522087251
-        
-        # "ENGINE": "django.db.backends.sqlite3",
-        "ENGINE": "",
+        "ENGINE": "" if RUNNING_ON_VERCEL else "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
