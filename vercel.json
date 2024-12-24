@@ -5,14 +5,7 @@
             "src": "quiz_gen_django/quiz_gen_django/wsgi.py",
             "use": "@vercel/python",
             "config": {
-                "maxLambdaSize": "15mb"
-            }
-        },
-        {
-            "src": "quiz_gen_django/build_files.sh",
-            "use": ["@vercel/static-build", "@vercel/python"],
-            "config": {
-                "distDir": "quiz_gen_django/staticfiles_build",
+                "maxLambdaSize": "15mb",
                 "runtime": "python3.10"
             }
         }
