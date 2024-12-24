@@ -317,3 +317,4 @@ quiz_gen_django/*.sqlite
 .env
 
 quiz_gen_django/staticfiles_build
+.vercel
