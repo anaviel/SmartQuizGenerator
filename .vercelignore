@@ -1,0 +1,7 @@
+cloud_api/
+screen/
+
+quiz_gen_django/pyproject.toml
+quiz_gen_django/pdm.lock
+quiz_gen_django/.env
+quiz_gen_django/.python-version

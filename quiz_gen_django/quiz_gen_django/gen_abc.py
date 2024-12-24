@@ -11,7 +11,7 @@ class QuestionGeneratorABC(ABC):
         pass
 
     @abstractmethod
-    def generate_correct_answers(
+    def generate_correct_answer(
         self,
         context: str,
         question: str
@@ -36,7 +36,7 @@ class QuestionGeneratorABC(ABC):
         answers = []
         
         for question in questions:
-            correct_answer = self.generate_correct_answers(
+            correct_answer = self.generate_correct_answer(
                 context,
                 question
             )

@@ -71,7 +71,7 @@ class LocalQuestionGenerator(QuestionGeneratorABC):
             text=context
         )
 
-    def generate_correct_answers(
+    def generate_correct_answer(
         self,
         context: str,
         question: str
