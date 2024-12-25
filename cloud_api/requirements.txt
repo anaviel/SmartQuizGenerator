@@ -1,0 +1,10 @@
+modal
+spacy
+spacy
+sentence-transformers
+sentencepiece
+transformers
+fastapi
+llama-cpp-python
+wikipedia
+python-dotenv

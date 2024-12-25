@@ -1,0 +1,30 @@
+[project]
+name = "quiz_gen_django"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    { name = "Olga Kovaleva", email = "kovaleva.olga.2004@gmail.com" },
+    { name = "Anastasia Markova", email = "norealemailhere@example.com" }
+]
+
+dependencies = [
+    "Django>=5.1.3",
+    "python-dotenv>=1.0.1",
+    "wikipedia>=1.4.0",
+    "spacy==3.8.2",
+    "sentence-transformers==3.3.1",
+    "sentencepiece==0.2.0",
+    "transformers==4.46.2",
+    "llama_cpp_python>=0.3.4",
+]
+
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
