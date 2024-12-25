@@ -26,20 +26,21 @@ load_dotenv()
 
 # получаем SECRET_KEY
 SECRET_KEY = os.getenv("SECRET_KEY")
-INFERENCE_SERVER_MODE = os.getenv("INFERENCE_SERVER_MODE")
 
+MY_TRUSTED_CSRF = os.getenv("CSRF_TRUSTED_ORIGIN")
+if MY_TRUSTED_CSRF is None:
+    RuntimeError(f"Not all environment variables: missing CSRF_TRUSTED_ORIGIN value is '{MY_TRUSTED_CSRF}'")
+
+INFERENCE_SERVER_MODE = os.getenv("INFERENCE_SERVER_MODE")
 print(f"[INFO] INFERENCE_SERVER_MODE: {INFERENCE_SERVER_MODE}")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '0.0.0.0',
-    '127.0.0.1',
-    'localhost',
-    '10.10.1.127',
-    '.vercel.app',
-    '.onrender.com'
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    MY_TRUSTED_CSRF,
+    'https://smartquizgenerator.onrender.com'
 ]
 
 
