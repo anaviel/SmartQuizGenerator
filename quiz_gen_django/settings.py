@@ -38,7 +38,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '10.10.1.127',
-    '.vercel.app'
+    '.vercel.app',
+    '.onrender.com'
 ]
 
 
