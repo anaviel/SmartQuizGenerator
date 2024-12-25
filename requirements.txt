@@ -8,5 +8,6 @@ transformers==4.46.2
 httpx==0.28.1
 gunicorn==23.0.0
 llama_cpp_python>=0.3.4
+whitenoise[brotli]>=6.8.2
 ru_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl
 -e .

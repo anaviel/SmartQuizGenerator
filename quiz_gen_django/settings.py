@@ -35,7 +35,7 @@ INFERENCE_SERVER_MODE = os.getenv("INFERENCE_SERVER_MODE")
 print(f"[INFO] INFERENCE_SERVER_MODE: {INFERENCE_SERVER_MODE}")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("IS_DEBUG", 'True').lower() in ('true', '1', 't')
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -90,7 +91,7 @@ WSGI_APPLICATION = "quiz_gen_django.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 RUNNING_ON_VERCEL = os.getenv("RUNNING_ON_VERCEL", 'False').lower() in ('true', '1', 't')
-print(f"[info] RUNNING_ON_VERCEL: {RUNNING_ON_VERCEL}")
+print(f"[INFO] RUNNING_ON_VERCEL: {RUNNING_ON_VERCEL}")
 DATABASES = {
     "default": {
         # [ATTENTION]: see vercel SQLite issue:
@@ -133,12 +134,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+if DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
