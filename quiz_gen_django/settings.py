@@ -90,14 +90,14 @@ WSGI_APPLICATION = "quiz_gen_django.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-RUNNING_ON_VERCEL = os.getenv("RUNNING_ON_VERCEL", 'False').lower() in ('true', '1', 't')
-print(f"[INFO] RUNNING_ON_VERCEL: {RUNNING_ON_VERCEL}")
+RUNNING_ON_CLOUD = os.getenv("RUNNING_ON_CLOUD", 'False').lower() in ('true', '1', 't')
+print(f"[INFO] RUNNING_ON_CLOUD: {RUNNING_ON_CLOUD}")
 DATABASES = {
     "default": {
         # [ATTENTION]: see vercel SQLite issue:
         #   - https://github.com/vercel/vercel/issues/2860#issuecomment-522087251
         #   - https://vercel.com/guides/is-sqlite-supported-in-vercel
-        "ENGINE": "" if RUNNING_ON_VERCEL else "django.db.backends.sqlite3",
+        "ENGINE": "" if RUNNING_ON_CLOUD else "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
